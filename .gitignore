@@ -1,3 +1,4 @@
 /prediction_model/x-ray_data
 /prediction_model/lung_validation_data
+**/__pycache__
 .venv
