@@ -98,6 +98,8 @@ def calculate_accuracy():
     print("Test accuracy:", test_acc[1])
 
 
+# manual predictions
+
 # images = [
 #     "BACTERIAL/person80_bacteria_389",
 #     "BACTERIAL/person82_bacteria_404",
