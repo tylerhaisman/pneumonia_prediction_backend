@@ -6,6 +6,7 @@ from colored import stylize
 from PIL import Image
 import io
 import os
+import tensorflow as tf
 
 
 def predict_pneumonia(file):
@@ -51,6 +52,50 @@ def predict_pneumonia(file):
         print("Pneumonia unlikely")
         print("Confidence:", confidence_percentages[1])
         return False, confidence_percentages[1], None, None
+
+
+def is_chest_xray(file):
+    img = Image.open(io.BytesIO(file))
+    img = img.convert("RGB")
+    img = img.resize((150, 150))
+
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+
+    img_array = img_array.astype("float32") / 255.0
+
+    model_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "lungs_prediction.keras"
+    )
+    model = load_model(model_path)
+
+    prediction = model.predict(img_array)
+    rounded_prediction = round(prediction[0][0] * 100, 2)
+    if rounded_prediction == 0:
+        return True
+    else:
+        return False
+
+
+def calculate_accuracy():
+    model_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "pneumonia_prediction.keras"
+    )
+    model = load_model(model_path)
+
+    train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+        rescale=1.0 / 255, validation_split=0.2
+    )
+
+    test_generator = train_datagen.flow_from_directory(
+        "./x-ray_data/test",
+        target_size=(150, 150),
+        batch_size=32,
+        class_mode="sparse",
+    )
+
+    test_acc = model.evaluate(test_generator)
+    print("Test accuracy:", test_acc[1])
 
 
 # images = [
