@@ -3,10 +3,26 @@ from tensorflow.keras import layers, models
 from tensorflow.keras.callbacks import EarlyStopping
 import numpy as np
 
+# model that predicts if the chest X-ray depicts no pneumonia, bacterial pneumonia, or viral pneumonia
+
 
 def train_pneumonia_model():
+
+    # train datagen with augmentation. Augmented images stored in memory during training
     train_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
-        rescale=1.0 / 255, validation_split=0.2
+        rescale=1.0 / 255,
+        validation_split=0.2,
+        rotation_range=10,
+        height_shift_range=0.1,
+        width_shift_range=0.1,
+        zoom_range=0.1,
+        brightness_range=(0.8, 1.2),
+    )
+
+    # test datagen without augmentation
+    test_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+        rescale=1.0 / 255,
+        validation_split=0.2,
     )
 
     train_generator = train_datagen.flow_from_directory(
@@ -17,7 +33,7 @@ def train_pneumonia_model():
         subset="training",
     )
 
-    validation_generator = train_datagen.flow_from_directory(
+    validation_generator = test_datagen.flow_from_directory(
         "./x-ray_data/val",
         target_size=(150, 150),
         batch_size=32,
@@ -25,7 +41,7 @@ def train_pneumonia_model():
         subset="validation",
     )
 
-    test_generator = train_datagen.flow_from_directory(
+    test_generator = test_datagen.flow_from_directory(
         "./x-ray_data/test",
         target_size=(150, 150),
         batch_size=32,
@@ -86,6 +102,9 @@ def train_pneumonia_model():
     print("Test accuracy:", test_acc[1])
 
     model.save("pneumonia_prediction.keras")
+
+
+# model that determines whether an image is a chest X-ray or not
 
 
 def train_lungs_model():
