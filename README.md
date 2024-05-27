@@ -1,20 +1,7 @@
-To install all dependencies,
+# Pneumonia Prediction Utility Server
 
-```
-pip install -r requirements.txt
-```
+By: Tyler Haisman
 
-for Python 2 or
+## Documentation
 
-```
-pip3 install -r requirements.txt
-```
-
-for Python 3.
-
-To save all dependencies in requirements.txt,
-
-```
-pip freeze > requirements.txt
-
-```
+Click [here](https://www.tylerhaisman.com/documents/pneumonia_prediction_utility/pneumonia_prediction_utility.pdf) to view the project documentation.
